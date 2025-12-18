@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"strings"
 	"text/template"
 	"time"
 
@@ -44,7 +45,14 @@ If PATH is not given, will show you the default message that is used.
 				}
 				tplStr = string(tplData)
 			}
-			if tpl, err = template.New("commitMessage").Parse(tplStr); err != nil {
+			funcMap := template.FuncMap{
+				"contains": strings.Contains,
+				"split":    strings.Split,
+				"sub": func(a, b int) int {
+					return a - b
+				},
+			}
+			if tpl, err = template.New("commitMessage").Funcs(funcMap).Parse(tplStr); err != nil {
 				fmt.Fprintf(cmd.ErrOrStderr(), "could not parse commit message template: %v", err)
 				return
 			}
