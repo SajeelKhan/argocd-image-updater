@@ -187,7 +187,8 @@ func (il *ImageTagList) SortBySemVer(ctx context.Context) SortableImageTagList {
 	}
 	sort.Sort(semverCollection(svl))
 	for _, svi := range svl {
-		sil = append(sil, NewImageTag(svi.Original(), *il.items[svi.Original()].TagDate, il.items[svi.Original()].TagDigest))
+		originalTag := il.items[svi.Original()]
+		sil = append(sil, NewImageTagWithLabels(svi.Original(), *originalTag.TagDate, originalTag.TagDigest, originalTag.Labels))
 	}
 	return sil
 }
